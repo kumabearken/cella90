@@ -4,9 +4,8 @@
 // FUN. Draw filled rect.
 var x_str_pos = 34;
 var y_str_pos = 84;
-var start_array=[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0];
-var current_array = start_array;
-var next_array=[];
+//var start_array=[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0];
+//var current_array = start_array;
 
 function draw_rect( ctx, stroke, fill )
 {
@@ -68,7 +67,7 @@ function draw_box( ctx, x_pos, y_pos ) //, stroke, fill )
 }
 
 //====================================================== make next line
-function find_next (ctx)
+/*function find_next (ctx)
 {
     for(var y = 0; y < 16; y++)
     {
@@ -148,7 +147,60 @@ function find_next (ctx)
             
             }
             */
-        }
+/*        }
         current_array = next_array;
     }
+}*/
+//Redesign to allow expansion depending on size of graph
+function find_next (ctx)
+{
+	var width = ctx.canvas.width;
+	var y=0;
+	var current_array=[0,1,0];
+	var next_array=[0,1,0];
+
+	
+	for (width = width / 2-15;width > x_str_pos ;width = width-10)
+	{
+  		console.log("row" + y);
+		for(var w = 0; w < current_array.length; w++)
+    	{
+    		if(current_array[w] == 1)
+        	{
+        	    draw_box(ctx,width-1 + w*10, y_str_pos + y*10);
+        	}
+    	}
+    	for(var x = 0; x < next_array.length; ++x)
+        {   
+        	if(x==0)
+        	{
+        		next_array[x]=1;
+        	}
+        	else if(x==next_array.length-1)
+        	{
+        		next_array[x]=1;
+        	}
+        	else if(current_array[x-1]==0 && current_array[x+1]==1)
+        	{
+        		next_array[x]=1;
+        	} 
+        	else if(current_array[x-1]==1 && current_array[x+1]==0)
+        	{
+        		next_array[x]=1;
+        	} 
+          	else
+        	{
+        		next_array[x]=0;
+        	}
+        }
+  		next_array.push(0);
+  		next_array.unshift(0);
+    	++y;
+    	console.log(current_array);
+		console.log(next_array);
+		for (var i =0 ; next_array.length > i; ++i)
+		{
+			current_array[i] = next_array[i];
+		}
+	}
 }
